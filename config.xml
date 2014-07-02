@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE config [ 
+	<!ELEMENT config (server, client) >
+	<!ELEMENT server (port) >
+	<!ELEMENT client (ip) >
+	<!ELEMENT port (#PCDATA) >
+	<!ELEMENT ip (#PCDATA) >
+]>
+<config>
+	<server>
+		<port>56111</port>
+	</server>
+	<client>
+		<ip>127.0.0.1</ip>
+	</client>
+</config>
