@@ -73,6 +73,10 @@ namespace TVRemote
                     NetworkStream networkStream = client.GetStream();
 
                     StreamReader networkStreamReader = new StreamReader(networkStream);
+                    StreamWriter networkStreamWriter = new StreamWriter(networkStream);
+
+                    networkStreamWriter.WriteLine("Connection approved.");
+                    networkStreamWriter.Flush();
 
                     string line;
                     while ((line = networkStreamReader.ReadLine()) != null)
