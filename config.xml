@@ -11,6 +11,6 @@
 		<port>56111</port>
 	</server>
 	<client>
-		<ip>127.0.0.1</ip>
+		<ip>192.168.1.114</ip>
 	</client>
 </config>
