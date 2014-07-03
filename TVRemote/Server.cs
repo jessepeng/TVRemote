@@ -67,34 +67,43 @@ namespace TVRemote
             while (true)
             {
                 TcpClient client = this.tcpListener.AcceptTcpClient();
-                IPAddress clientIPAddress = ((IPEndPoint)client.Client.RemoteEndPoint).Address;
-                if (clientIPAddress.Equals(GetAllowedClientIP()))
+                try
                 {
-                    NetworkStream networkStream = client.GetStream();
-
-                    StreamReader networkStreamReader = new StreamReader(networkStream);
-                    StreamWriter networkStreamWriter = new StreamWriter(networkStream);
-
-                    networkStreamWriter.WriteLine("Connection approved.");
-                    networkStreamWriter.Flush();
-
-                    string line;
-                    while ((line = networkStreamReader.ReadLine()) != null)
+                    IPAddress clientIPAddress = ((IPEndPoint)client.Client.RemoteEndPoint).Address;
+                    if (clientIPAddress.Equals(GetAllowedClientIP()))
                     {
-                        switch (line)
+                        NetworkStream networkStream = client.GetStream();
+
+                        StreamReader networkStreamReader = new StreamReader(networkStream);
+                        StreamWriter networkStreamWriter = new StreamWriter(networkStream);
+
+                        networkStreamWriter.WriteLine("Connection approved.");
+                        networkStreamWriter.Flush();
+
+                        string line;
+                        while ((line = networkStreamReader.ReadLine()) != null)
                         {
-                            case "reset":
-                                new Thread(new ThreadStart(ResetTVCenter)).Start();
-                                break;
-                            default:
-                                ActivateTVCenter();
-                                SendKeys.SendWait(line);
-                                break;
+                            switch (line)
+                            {
+                                case "reset":
+                                    new Thread(new ThreadStart(ResetTVCenter)).Start();
+                                    break;
+                                case "close":
+                                    Process.Start("shutdown", "/s /t 0");
+                                    break;
+                                default:
+                                    ActivateTVCenter();
+                                    SendKeys.SendWait(line);
+                                    break;
+                            }
                         }
+
                     }
                 }
-
-                client.Close();
+                finally
+                {
+                    client.Close();
+                }
             }
         }
 
