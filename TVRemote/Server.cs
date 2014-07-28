@@ -92,8 +92,10 @@ namespace TVRemote
                                     Process.Start("shutdown", "/s /t 0");
                                     break;
                                 default:
-                                    ActivateTVCenter();
-                                    SendKeys.SendWait(line);
+                                    if (ActivateTVCenter())
+                                    {
+                                        SendKeys.SendWait(line);
+                                    }
                                     break;
                             }
                         }
@@ -107,15 +109,23 @@ namespace TVRemote
             }
         }
 
-        private void ActivateTVCenter()
+        private Boolean ActivateTVCenter()
         {
             Process[] TVCenters = Process.GetProcessesByName("tvcenter");
             if (TVCenters.Length > 0)
             {
-                SetForegroundWindow(Process.GetCurrentProcess().MainWindowHandle);
+                if (Process.GetCurrentProcess().ProcessName != "tvcenter")
+                {
+                    SetForegroundWindow(Process.GetCurrentProcess().MainWindowHandle);
+                }
                 Process TVCenter = TVCenters[0];
-                SetForegroundWindow(TVCenter.MainWindowHandle);
+                if (TVCenter.Responding)
+                {
+                    SetForegroundWindow(TVCenter.MainWindowHandle);
+                    return true;
+                }
             }
+            return false;
         }
 
         [DllImport("user32.dll")]
